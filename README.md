@@ -3,11 +3,16 @@
 🛠️ Tech Stack
 
 Frontend: ReactTS,Redux , Vite.
+
 Backend: ASP.NET, .NET-8
+
 Database: MSSQL
 Maps: Google maps api
+
 Auth: Firebase
+
 MessageBroker: RabbitMQ
+
 Cache: Redis
 
 🚀 Getting Started
