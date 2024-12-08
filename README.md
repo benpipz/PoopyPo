@@ -18,7 +18,7 @@ Maps: Google maps api
 
 🚀 Getting Started
 
-Clone the repo: git clone https://github.com/benpipz/PoopyPoClient.git
+Clone the repo: git clone https://github.com/benpipz/PoopyPo.git
 cd to the root folder.
 
 run docker-compose up
