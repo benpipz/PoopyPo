@@ -1,0 +1,6 @@
+@PoopyPoApi_HostAddress = http://localhost:5226
+
+GET {{PoopyPoApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
