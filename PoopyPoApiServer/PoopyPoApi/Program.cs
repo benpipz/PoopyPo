@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using PoopyPoApi.Data;
 using PoopyPoApi.Repositories;
 using PoopyPoApi.Services;
+using RabbitMQInfrastructure;
+using RabbitMQInfrastructure.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,7 @@ builder.Services.AddScoped<ILocationRepository, SQLLocationRepository>();
 builder.Services.AddScoped<IPointsService, PointsService>();
 builder.Services.AddScoped<IUsersRepository, SQLUserRepository>();
 builder.Services.AddScoped<IUsersService, UsersService>();
+builder.Services.AddScoped<IMessageQueueService, RabbitMqService>();
 
 builder.Services.Configure<FormOptions>(options =>
 {

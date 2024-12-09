@@ -1,12 +1,14 @@
 ﻿using PoopyPoApi.Models.Domain;
 using PoopyPoApi.Models.Dto;
 using PoopyPoApi.Repositories;
+using RabbitMQInfrastructure.Interfaces;
 
 namespace PoopyPoApi.Services
 {
-    public class PointsService(ILocationRepository locationRepository) : IPointsService
+    public class PointsService(ILocationRepository locationRepository, IMessageQueueService messageQueueService) : IPointsService
     {
         private readonly ILocationRepository _locationRepository = locationRepository;
+        private readonly IMessageQueueService _messageQueueService = messageQueueService;
 
         public async Task<PoopLocationDto> CreateLocationAsync(PoopLocationDto locationDto)
         {
@@ -26,20 +28,22 @@ namespace PoopyPoApi.Services
                 Image = locationDto.Image is not null ? Convert.FromBase64String(locationDto.Image) : null
             };
 
-            _ = await _locationRepository.CreateLocationAsync(location);
+            var resultPoopLocation = await _locationRepository.CreateLocationAsync(location);
+
+            _messageQueueService.Publish("poopypo.notifications.createdNewLocation", resultPoopLocation);
 
             var locationDtoResponse = new PoopLocationDto
             {
-                Id = location.Id,
-                Latitude = location.Latitude,
-                Longitude = location.Longitude,
-                Votes = location.Votes,
-                PoopDate = location.PoopDate,
-                UserId = location.UserId,
-                User = location.User,
-                Anonymous = locationDto.Anonymous,
-                Description = locationDto.Description,
-                Image = locationDto.Image is not null ? Convert.ToBase64String(location.Image) : null
+                Id = resultPoopLocation.Id,
+                Latitude = resultPoopLocation.Latitude,
+                Longitude = resultPoopLocation.Longitude,
+                Votes = resultPoopLocation.Votes,
+                PoopDate = resultPoopLocation.PoopDate,
+                UserId = resultPoopLocation.UserId,
+                User = resultPoopLocation.User,
+                Anonymous = resultPoopLocation.Anonymous,
+                Description = resultPoopLocation.Description,
+                Image = resultPoopLocation.Image is not null ? Convert.ToBase64String(resultPoopLocation.Image) : null
             };
 
             return locationDtoResponse;

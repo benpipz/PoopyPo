@@ -19,4 +19,8 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RabbitMQInfrastructure\RabbitMQInfrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
