@@ -30,8 +30,8 @@ const Login = () => {
         Id: user.uid,
       };
       const response = await ApiUtils.Get(`users/${user.uid}`);
-      if (!(response.status == 200)) {
-        const response = await ApiUtils.Post("users", userObj);
+      if (response != undefined && response.status == 204) {
+        await ApiUtils.Post("users", userObj);
       }
     }
   };
