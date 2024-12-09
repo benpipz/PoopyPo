@@ -2,7 +2,7 @@
 
 namespace PoopyPoApi.Models.Dto
 {
-    public class PoopInteraction
+    public class PoopInteractionDto
     {
         public string UserId { get; set; }
         public InteractionType Interaction { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace PoopyPoApi.Models.Domain
 {
-    public class PoopInteractions
+    public class PoopInteraction
     {
         public Guid Id { get; set; }
         public InteractionType InteractionType { get; set; }
@@ -14,6 +14,8 @@
     {
         None,
         Upvote,
-        Downvote
+        UndoUpvote,
+        Downvote,
+        UndoDowvote,
     }
 }

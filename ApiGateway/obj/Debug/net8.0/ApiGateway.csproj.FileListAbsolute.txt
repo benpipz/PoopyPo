@@ -23,3 +23,4 @@ F:\PoopyPo\PoopyPo-MonRepo\PoopyPo\ApiGateway\obj\Debug\net8.0\refint\ApiGateway
 F:\PoopyPo\PoopyPo-MonRepo\PoopyPo\ApiGateway\obj\Debug\net8.0\ApiGateway.pdb
 F:\PoopyPo\PoopyPo-MonRepo\PoopyPo\ApiGateway\obj\Debug\net8.0\ApiGateway.genruntimeconfig.cache
 F:\PoopyPo\PoopyPo-MonRepo\PoopyPo\ApiGateway\obj\Debug\net8.0\ref\ApiGateway.dll
+F:\PoopyPo\PoopyPo-MonRepo\PoopyPo\ApiGateway\obj\Debug\net8.0\ApiGateway.sourcelink.json

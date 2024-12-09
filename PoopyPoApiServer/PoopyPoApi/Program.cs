@@ -1,17 +1,23 @@
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using PoopyPoApi.Data;
+using PoopyPoApi.Repositories;
+using PoopyPoApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+builder.Configuration.AddEnvironmentVariables();
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+var connection = builder.Configuration["PoopyPoConnectionString"];
 builder.Services.AddDbContext<PoopyDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("PoopyPoConnectionString")));
+    options.UseSqlServer(builder.Configuration["PoopyPoConnectionString"]));
+builder.Services.AddScoped<ILocationRepository, SQLLocationRepository>();
+builder.Services.AddScoped<IPointsService, PointsService>();
+builder.Services.AddScoped<IUsersRepository, SQLUserRepository>();
+builder.Services.AddScoped<IUsersService, UsersService>();
+
 builder.Services.Configure<FormOptions>(options =>
 {
     options.MultipartBodyLengthLimit = 100 * 1024 * 1024;
@@ -28,7 +34,6 @@ builder.Services.AddCors(options =>
         );
 }
 );
-
 
 var app = builder.Build();
 

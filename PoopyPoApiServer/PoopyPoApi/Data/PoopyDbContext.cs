@@ -3,14 +3,10 @@ using PoopyPoApi.Models.Domain;
 
 namespace PoopyPoApi.Data
 {
-    public class PoopyDbContext : DbContext
+    public class PoopyDbContext(DbContextOptions dbContextOptions) : DbContext(dbContextOptions)
     {
-        public PoopyDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
-        {
-        }
-
         public DbSet<PoopLocation> PoopLocations { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<PoopInteractions> PoopInteractions { get; set; }
+        public DbSet<PoopInteraction> PoopInteractions { get; set; }
     }
 }

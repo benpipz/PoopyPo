@@ -2,7 +2,7 @@
 
 namespace PoopyPoApi.Models.Dto
 {
-    public class LocationDto
+    public class PoopLocationDto
     {
         public Guid? Id { get; set; }
         public double Latitude { get; set; }

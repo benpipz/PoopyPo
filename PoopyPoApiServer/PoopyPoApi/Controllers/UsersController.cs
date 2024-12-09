@@ -1,65 +1,57 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using PoopyPoApi.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using PoopyPoApi.Models.Domain;
 using PoopyPoApi.Models.Dto;
+using PoopyPoApi.Services;
 
 namespace PoopyPoApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController(IUsersService usersService) : ControllerBase
     {
-        private readonly PoopyDbContext _poopyDbContext;
-
-        public UsersController(PoopyDbContext poopyDbContext)
-        {
-            _poopyDbContext = poopyDbContext;
-        }
+        private readonly IUsersService _usersService = usersService;
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var users = _poopyDbContext.Users.ToList();
+            var usersDto = await _usersService.GetAllUsers();
 
-            if (users.Count == 0)
+            if (usersDto.Count == 0)
             {
                 return NoContent();
             }
 
-            return Ok(users);
+            return Ok(usersDto);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> IsUserExists([FromRoute] string id)
         {
-            var user = await _poopyDbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+            bool isExists = await _usersService.IsUserExits(id);
 
-            if (user is null)
+            if (!isExists)
             {
                 return StatusCode(204);
             }
 
-            return Ok(user);
+            return Ok();
         }
 
         [HttpPost]
-        public IActionResult AddUser([FromBody] UserDto singUpUserDto)
+        public async Task<IActionResult> AddUser([FromBody] UserDto singUpUserDto)
         {
-            UserDto userDto = new UserDto();
+            var userDto = await _usersService.CreateUser(singUpUserDto);
 
-            User user = new User();
-            user.SignupDate = DateOnly.FromDateTime(DateTime.Now);
-            user.Name = singUpUserDto.Name;
-            user.Email = singUpUserDto.Email;
-            user.PoopyScore = 0;
-            user.Id = singUpUserDto.Id;
+            User user = new()
+            {
+                SignupDate = (DateOnly)userDto.SignupDate,
+                Name = userDto.Name,
+                Email = userDto.Email,
+                PoopyScore = (uint)userDto.PoopyScore,
+                Id = userDto.Id,
+            };
 
-            _poopyDbContext.Users.Add(user);
-            _poopyDbContext.SaveChanges();
-
-            return Ok();
+            return Created($"/api/users/{user.Id}",null);
         }
 
 
