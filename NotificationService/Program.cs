@@ -1,6 +1,8 @@
+using NotificationService.Services;
+using RabbitMQInfrastructure;
+using RabbitMQInfrastructure.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
-
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCors(options =>
@@ -12,6 +14,10 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod(); // Allow any method (GET, POST, PUT, DELETE, etc.)
     });
 });
+builder.Services.AddSingleton<IMessageQueueConsumer, RabbitMQConsumer>();
+builder.Services.AddSingleton<IMessageQueueService, RabbitMqService>();
+builder.Services.AddSingleton<ISocketManager,WebScokertManager>();
+
 var app = builder.Build();
 
 app.UseWebSockets();

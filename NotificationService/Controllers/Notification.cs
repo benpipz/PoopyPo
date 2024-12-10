@@ -1,15 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NotificationService.Services;
 using System.Net.WebSockets;
-using System.Text;
 
 namespace NotificationService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Notification : ControllerBase
+    public class Notification(ISocketManager socketManager) : ControllerBase
     {
-
-        private List<WebSocket> _websockets = new();
+        private readonly ISocketManager _socketManager = socketManager;
 
         [HttpGet]
         [HttpGet("ws")]
@@ -18,37 +17,41 @@ namespace NotificationService.Controllers
             if (HttpContext.WebSockets.IsWebSocketRequest)
             {
                 var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
-                _websockets.Add(webSocket);
+                _socketManager.AddSocket(webSocket);
 
-                _ = Task.Run(async () =>
-                {
-                    await HandleWebSocketCommunication(webSocket);
-                });
-                while (true)
-                {
 
-                }
+                await HandleWebSocketCommunication(webSocket);
+
             }
             else
             {
-                //HttpContext.Response.StatusCode = 400;
+                HttpContext.Response.StatusCode = 400;
             }
         }
 
         private async Task HandleWebSocketCommunication(WebSocket webSocket)
         {
-            var buffer = new byte[1024 * 4];
-            while (true)
+            try
             {
+
+                var buffer = new byte[1024 * 4];
+
 
                 while (webSocket.State == WebSocketState.Open)
                 {
-                    var responseMessage = "h222i";
-                    var responseBytes = Encoding.UTF8.GetBytes(responseMessage);
-                    await webSocket.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
-                    Thread.Sleep(5000);
+                    var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
 
+                    if (result.MessageType == WebSocketMessageType.Close)
+                    {
+                        await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closed by the client", CancellationToken.None);
+                        _socketManager.RemoveSocket(webSocket);
+                        return;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ex in webscoket");
             }
         }
     }

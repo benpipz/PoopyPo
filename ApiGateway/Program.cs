@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.WebSockets;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
@@ -10,13 +12,29 @@ builder.Services.AddCors(options =>
     });
 });
 var app = builder.Build();
+app.UseWebSockets();
 
 // Define downstream services
 var services = new Dictionary<string, string>
 {
-    { "api", "https://localhost:7236/api" }
+    { "api", "https://localhost:7236/api" },
+    { "notification", "https://localhost:5179/api" }
+
 };
 
+
+// Custom Gateway Logic
+app.Map("/ws", async context =>
+{
+    if (context.WebSockets.IsWebSocketRequest)
+    {
+        // Route WebSocket requests to another service or handle locally
+    }
+    else
+    {
+        context.Response.StatusCode = 400;  // Bad request if not a WebSocket
+    }
+});
 // Custom Gateway Logic
 app.Map("/{service}/{*path}", async (string service, string? path, HttpContext context) =>
 {

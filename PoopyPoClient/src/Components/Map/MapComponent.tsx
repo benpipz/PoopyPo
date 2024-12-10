@@ -10,6 +10,40 @@ const MapComponent: FC<any> = () => {
   const localLocation = useSelector<MapSlice>(
     (state) => state.map.localLocation
   );
+  const [socket, setSocket] = useState<WebSocket | null>(null);
+  const [flag, setFlag] = useState(0);
+
+  useEffect(() => {
+    // Create WebSocket connection
+    const ws = new WebSocket("ws://localhost:7086/api/Notification/ws");
+    setSocket(ws);
+
+    // Save the WebSocket instance
+
+    // Listen for messages
+    ws.onmessage = (event: MessageEvent<string>) => {
+      console.log(`recieved wescoket message ${event.data}`);
+      setFlag(Math.random());
+    };
+
+    // Handle WebSocket closure
+    ws.onclose = () => {
+      console.log("WebSocket connection closed");
+      socket?.close();
+    };
+
+    // Handle errors
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+      socket?.close();
+    };
+
+    return () => {
+      socket?.close();
+      console.log("web socket closed localy");
+    };
+  }, []);
+
   const dispatch = useDispatch();
 
   const geolocationPremission = () => {
@@ -40,7 +74,7 @@ const MapComponent: FC<any> = () => {
       }
     };
     getPointsFromServer();
-  }, []);
+  }, [flag]);
 
   useEffect(() => {
     geolocationPremission();

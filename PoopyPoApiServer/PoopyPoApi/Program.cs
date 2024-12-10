@@ -19,7 +19,7 @@ builder.Services.AddScoped<ILocationRepository, SQLLocationRepository>();
 builder.Services.AddScoped<IPointsService, PointsService>();
 builder.Services.AddScoped<IUsersRepository, SQLUserRepository>();
 builder.Services.AddScoped<IUsersService, UsersService>();
-builder.Services.AddScoped<IMessageQueueService, RabbitMqService>();
+builder.Services.AddSingleton<IMessageQueueService, RabbitMqService>();
 
 builder.Services.Configure<FormOptions>(options =>
 {
