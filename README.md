@@ -7,6 +7,7 @@ Frontend: ReactTS,Redux , Vite.
 Backend: ASP.NET, .NET8
 
 Database: MSSQL
+
 Maps: Google maps api
 
 Auth: Firebase
