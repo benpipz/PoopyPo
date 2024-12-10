@@ -18,4 +18,4 @@ Cache: Redis
 🚀 Getting Started
 Clone the repo: git clone https://github.com/benpipz/PoopyPo.git
 
-!Project Design](./PoopyPoClient/src/assets/Design.png)
+![Project Design](./PoopyPoClient/src/assets/Design.png)
