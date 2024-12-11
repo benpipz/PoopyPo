@@ -21,7 +21,7 @@ namespace NotificationService.Controllers
 
 
                 await HandleWebSocketCommunication(webSocket);
-
+                
             }
             else
             {
@@ -52,6 +52,10 @@ namespace NotificationService.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine("ex in webscoket");
+            }
+            finally
+            {
+                _socketManager.RemoveSocket(webSocket);
             }
         }
     }

@@ -23,7 +23,6 @@ namespace PoopyPoApi.Controllers
             return Ok(points);
         }
 
-
         [HttpGet]
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
@@ -57,7 +56,7 @@ namespace PoopyPoApi.Controllers
         [Route("{LocationdId:Guid}")]
         public async Task<IActionResult> UpdateVote([FromRoute] Guid LocationdId, [FromBody] PoopInteractionDto interaction)
         {
-           var locationDto = await _pointsService.UpdatePoopInteraction(LocationdId, interaction);
+            var locationDto = await _pointsService.UpdatePoopInteraction(LocationdId, interaction);
 
             if (locationDto == null)
             {
@@ -78,6 +77,5 @@ namespace PoopyPoApi.Controllers
             }
             return Ok(poopInteraction.Interaction);
         }
-
     }
 }

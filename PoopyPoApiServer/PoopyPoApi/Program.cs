@@ -5,6 +5,7 @@ using PoopyPoApi.Repositories;
 using PoopyPoApi.Services;
 using RabbitMQInfrastructure;
 using RabbitMQInfrastructure.Interfaces;
+using RedisInfrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,7 @@ builder.Services.AddScoped<IPointsService, PointsService>();
 builder.Services.AddScoped<IUsersRepository, SQLUserRepository>();
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddSingleton<IMessageQueueService, RabbitMqService>();
+builder.Services.AddSingleton<ICacheService>(provider => new RedisService("localhost:6379"));
 
 builder.Services.Configure<FormOptions>(options =>
 {

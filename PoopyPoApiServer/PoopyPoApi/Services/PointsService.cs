@@ -2,13 +2,16 @@
 using PoopyPoApi.Models.Dto;
 using PoopyPoApi.Repositories;
 using RabbitMQInfrastructure.Interfaces;
+using RedisInfrastructure;
+using System.Text.Json;
 
 namespace PoopyPoApi.Services
 {
-    public class PointsService(ILocationRepository locationRepository, IMessageQueueService messageQueueService) : IPointsService
+    public class PointsService(ILocationRepository locationRepository, IMessageQueueService messageQueueService, ICacheService cacheService) : IPointsService
     {
         private readonly ILocationRepository _locationRepository = locationRepository;
         private readonly IMessageQueueService _messageQueueService = messageQueueService;
+        private readonly ICacheService _cacheService = cacheService;
 
         public async Task<PoopLocationDto> CreateLocationAsync(PoopLocationDto locationDto)
         {
@@ -29,8 +32,12 @@ namespace PoopyPoApi.Services
             };
 
             var resultPoopLocation = await _locationRepository.CreateLocationAsync(location);
-
-            _messageQueueService.Publish("poopypo.notifications.createdNewLocation", resultPoopLocation);
+            if (resultPoopLocation != null)
+            {
+                var serializedObj = JsonSerializer.Serialize(resultPoopLocation);
+                await _cacheService.SetCacheValue(resultPoopLocation.Id.ToString(), serializedObj);
+                _messageQueueService.Publish("poopypo.notifications.createdNewLocation", resultPoopLocation);
+            }
 
             var locationDtoResponse = new PoopLocationDto
             {
@@ -86,7 +93,17 @@ namespace PoopyPoApi.Services
 
         public async Task<PoopInteractionDto> GetLastInteractionOnPointAsync(Guid id, string userId)
         {
-            var interaction = await _locationRepository.GetLastInteractionOnPointAsync(id, userId);
+            PoopInteraction? interaction;
+            string value = await _cacheService.GetCacheValue(id.ToString()+userId);
+            if (!string.IsNullOrEmpty(value))
+            {
+                interaction = JsonSerializer.Deserialize<PoopInteraction>(value);
+            }
+            else
+            {
+                interaction = await _locationRepository.GetLastInteractionOnPointAsync(id, userId);
+            }
+
             PoopInteractionDto poopInteractionDto = new PoopInteractionDto();
             poopInteractionDto.UserId = userId;
 
@@ -99,7 +116,17 @@ namespace PoopyPoApi.Services
 
         public async Task<PoopLocationDto> GetPointByIdAsync(Guid id)
         {
-            var location = await _locationRepository.GetLocationByIdAsync(id);
+            PoopLocation? location;
+            string value = await _cacheService.GetCacheValue(id.ToString());
+            if (!string.IsNullOrEmpty(value))
+            {
+                location = JsonSerializer.Deserialize<PoopLocation>(value);
+            }
+            else
+            {
+                location = await _locationRepository.GetLocationByIdAsync(id);
+            }
+
             var locationDto = new PoopLocationDto
             {
                 Id = location.Id,
@@ -150,6 +177,8 @@ namespace PoopyPoApi.Services
             var updatedLocation = await _locationRepository.UpdatePoopLocation(location);
             var interaction = await _locationRepository.UpdateLocationInteractionAsync(poopInteraction, updatedLocation);
 
+            var serializedinteractionObj = JsonSerializer.Serialize(interaction);
+            await _cacheService.SetCacheValue(updatedLocation.Id.ToString()+user.Id, serializedinteractionObj);
 
             var locationDtoResponse = new PoopLocationDto
             {

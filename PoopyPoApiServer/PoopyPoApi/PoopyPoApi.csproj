@@ -12,6 +12,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="RabbitMQInfrastructure" Version="1.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
   </ItemGroup>
 
@@ -20,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RabbitMQInfrastructure\RabbitMQInfrastructure.csproj" />
+    <ProjectReference Include="..\RedisInfrastructure\RedisInfrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -16,11 +16,11 @@ namespace NotificationService.Services
                 string msg = $"amount of webscokets: {_websockets.Count}";
                 foreach (WebSocket ws in _websockets)
                 {
-                    if(ws.State == WebSocketState.Open)
+                    if (ws.State == WebSocketState.Open)
                     {
 
-                    var responseBytes = Encoding.UTF8.GetBytes(msg);
-                    await ws.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
+                        var responseBytes = Encoding.UTF8.GetBytes(msg);
+                        await ws.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
                     }
                     else
                     {

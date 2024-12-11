@@ -15,7 +15,7 @@ const MapComponent: FC<any> = () => {
 
   useEffect(() => {
     // Create WebSocket connection
-    const ws = new WebSocket("ws://localhost:7086/api/Notification/ws");
+    const ws = new WebSocket("ws://localhost:5000/api/Notification/ws");
     setSocket(ws);
 
     // Save the WebSocket instance
