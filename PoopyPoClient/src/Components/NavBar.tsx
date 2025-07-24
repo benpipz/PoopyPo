@@ -11,50 +11,57 @@ import RoundImage from "./Utils/RoundImage";
 
 const NavBar = ({ toggleSidebar }) => {
   const [user, loading] = useAuthState(auth);
-  const [userWelcome, setUserWelcome] = useState<any>("");
+  const [userWelcome, setUserWelcome] = useState<string>("");
 
   useEffect(() => {
     if (user) {
       setUserWelcome(`Hello, ${user.displayName}`);
       setTimeout(() => {
-        setUserWelcome(user.displayName);
+        setUserWelcome(user.displayName || "");
       }, 5000);
     }
   }, [user]);
 
   return (
     <nav>
-      <div style={{ display: "flex" }}>
+      <div style={{ display: "flex", alignItems: "center" }}>
         <img
           src={PoopyPoLogo}
-          style={{ width: "50px", height: "50px" }}
           alt="logo"
+          style={{
+            height: "5vh",         // responsive to navbar height
+            aspectRatio: "1 / 1",  // keeps square shape
+            objectFit: "contain",
+          }}
         />
         <div
           style={{
-            justifyContent: "center",
-            alignContent: "center",
+            display: "flex",
+            alignItems: "center",
+            paddingLeft: "8px",
           }}
         >
           <img
             src={LogoText}
+            alt="logo text"
             style={{
-              width: "90px",
-              height: "38px",
+              height: "4vh",       // slightly smaller than navbar
+              objectFit: "contain",
             }}
-            alt="logo"
           />
         </div>
       </div>
-      <div className="flex">
+
+      <div className="flex" style={{ alignItems: "center" }}>
         {user && user.photoURL && (
           <>
             <RoundImage src={user.photoURL} />
             <Typography
               style={{
-                justifyContent: "center",
-                alignContent: "center",
-                padding: "10px",
+                fontSize: "clamp(0.8rem, 1.5vh, 1.2rem)",
+                padding: "0 10px",
+                display: "flex",
+                alignItems: "center",
               }}
             >
               {userWelcome}
@@ -62,6 +69,7 @@ const NavBar = ({ toggleSidebar }) => {
           </>
         )}
       </div>
+
       <ul>
         <Link to="/PoopyPoClient">
           <li className="hideOnMobile">Home</li>
@@ -81,7 +89,7 @@ const NavBar = ({ toggleSidebar }) => {
           </Link>
         )}
         <li className="menu-button">
-          <Hamburger onClick={toggleSidebar} />
+          <Hamburger onClick={toggleSidebar} size="4.5vh" />
         </li>
       </ul>
     </nav>

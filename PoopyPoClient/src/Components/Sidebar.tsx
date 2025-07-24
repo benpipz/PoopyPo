@@ -14,15 +14,8 @@ const Sidebar: FC<SidebarType> = ({ isOpen, toggleSidebar }) => {
 
   return (
     <div className={`sidebar ${isOpen ? "open" : ""}`}>
-      <div
-        className="ben"
-        style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "flex-end",
-        }}
-      >
-        <Hamburger onClick={toggleSidebar} />
+      <div className="sidebar-hamburger">
+        <Hamburger onClick={toggleSidebar} size="4.5vh" />
       </div>
       {isOpen && (
         <div>

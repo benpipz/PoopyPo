@@ -13,9 +13,9 @@ builder.Configuration.AddEnvironmentVariables();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-var connection = builder.Configuration["PoopyPoConnectionString"];
+var connection = builder.Configuration.GetConnectionString("PoopyPoConnectionString");
 builder.Services.AddDbContext<PoopyDbContext>(options =>
-    options.UseSqlServer(builder.Configuration["PoopyPoConnectionString"]));
+    options.UseSqlServer(connection));
 builder.Services.AddScoped<ILocationRepository, SQLLocationRepository>();
 builder.Services.AddScoped<IPointsService, PointsService>();
 builder.Services.AddScoped<IUsersRepository, SQLUserRepository>();
@@ -34,9 +34,18 @@ builder.WebHost.ConfigureKestrel(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllMySpecificOrigins",
-        policy => policy.WithOrigins("https://localhost:7086").AllowAnyMethod().AllowAnyHeader()
-        );
+    //options.AddPolicy("AllMySpecificOrigins", policy =>
+    //{
+    //    policy.WithOrigins("http://localhost:5173", "https://192.168.68.63:5173")
+    //          .AllowAnyMethod()
+    //          .AllowAnyHeader();
+    //});
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
 }
 );
 
@@ -47,7 +56,9 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseCors("AllMySpecificOrigins");
+    //app.UseCors("AllMySpecificOrigins");
+    app.UseCors("AllowAll");
+
 }
 
 app.UseHttpsRedirection();

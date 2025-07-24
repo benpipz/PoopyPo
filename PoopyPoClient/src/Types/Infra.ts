@@ -4,15 +4,16 @@ export interface Location {
 }
 
 export interface Point {
-  id: string;
+   id: string;
   latitude: number;
   longitude: number;
   poopDate: string;
   user: User;
   userId: string;
   votes: number;
-  image: string;
-  description: string;
+  image: string | null;
+  anonymous: boolean | null;
+  description: string | null;
 }
 
 export interface User {

@@ -1,13 +1,13 @@
-.container {
-  display: flex;
-  justify-content: space-evenly;
-  padding: 10px;
+/* General Reset & Layout */
+:root {
+  --navbar-height: 5vh; /* ~8% of screen height */
 }
 
-.flex {
-  display: flex;
-  flex-direction: row;
+nav,
+.navbar {
+  height: var(--navbar-height);
 }
+
 
 * {
   margin: 0;
@@ -16,68 +16,9 @@
   box-sizing: border-box;
 }
 
-.buttons {
-  display: flex;
-  flex-direction: column;
-}
-
-.smallContainer {
-  display: flex;
-  justify-content: center;
-}
-
-.smallCol {
-  display: flex;
-  flex-direction: column;
-}
-
-.spacer {
-  margin: 10px;
-}
-
-.app {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: rgb(253, 236, 175);
-  height: 100vh;
-  width: 100vw;
-  transition: filter 0.3s;
+html, body {
+  height: 100%;
   overflow: hidden;
-}
-
-.app.blur {
-  filter: blur(5px);
-}
-
-.container2 {
-  height: 95%;
-  width: 100%;
-  padding-top: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  padding-bottom: 15px;
-}
-
-.logo-text {
-  font-size: 1em;
-  font-weight: bold;
-  color: #ffffff;
-}
-
-.navbar {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  /* background-color: rgb(249, 182, 109); */
-  background: rgb(101 163, 67);
-  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
-}
-
-* {
-  margin: 0;
-  padding: 0;
 }
 
 body {
@@ -85,12 +26,46 @@ body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-nav {
+/* App container */
+.app {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(253, 236, 175);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  transition: filter 0.3s;
+}
+
+.app.blur {
+  filter: blur(5px);
+}
+
+.container2 {
+  height: calc(100vh - var(--navbar-height));
+  margin-top: var(--navbar-height);
+  padding: 0 16px;
+  box-sizing: border-box;
   width: 100%;
-  background: rgb(101 163, 67);
-  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+}
+
+
+
+
+/* Navigation Bar */
+.navbar,
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background: rgb(101, 163, 67);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 nav ul {
@@ -98,7 +73,7 @@ nav ul {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin: 0px 12px -20px;
+  margin: 0 12px -20px;
 }
 
 nav h4 {
@@ -119,34 +94,18 @@ nav a {
   color: black;
 }
 
-.sidebar li {
-  width: 100%;
-}
-.sidebar a {
-  width: 100%;
-}
-.menu-button {
-  display: none;
-}
-@media (max-width: 800px) {
-  .hideOnMobile {
-    display: none;
-  }
-  .menu-button {
-    display: block;
-  }
-}
-@media (max-width: 400px) {
-  .sidebar {
-    width: 100%;
-  }
+.logo-text {
+  font-size: 1em;
+  font-weight: bold;
+  color: #ffffff;
 }
 
+/* Sidebar Styles */
 .sidebar {
   display: flex;
   position: fixed;
   top: 0;
-  right: -250px; /* Start position (hidden) */
+  right: -250px;
   width: 150px;
   height: 100%;
   background-color: #ffffff;
@@ -154,14 +113,13 @@ nav a {
   transition: right 0.3s ease-in-out;
   padding: 1rem;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
-  z-index: 1000; /* Ensure it's above other content */
+  z-index: 1000;
 }
 
 .sidebar.open {
-  display: flex;
   flex-direction: column;
   align-items: flex-start;
-  right: 0; /* When open, the sidebar is fully visible */
+  right: 0;
 }
 
 .sidebar2 {
@@ -169,23 +127,72 @@ nav a {
   flex-direction: column;
   justify-content: space-between;
   margin-top: 17px;
-  right: 0; /* When open, the sidebar is fully visible */
-  text-decoration: none;
 }
 
 .sidebar2.open ul {
   list-style: none;
-  text-decoration: none;
 }
 
 .sidebar2 li {
   margin-top: 30px;
-  height: 100%;
-  pad: 0 30px;
   text-decoration: none;
   display: flex;
   align-items: center;
   color: rgb(0, 0, 0);
+}
+
+.buttons {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+
+  padding: 8px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.15); /* subtle translucency */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* soft shadow */
+  backdrop-filter: blur(2px); /* slight glass effect */
+}
+
+
+
+
+.buttons img:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+
+.map-container {
+  position: relative;
+}
+
+.smallContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.smallCol {
+  display: flex;
+  flex-direction: column;
+}
+
+.spacer {
+  margin: 10px;
+}
+
+.container {
+  position: relative;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .emojyButton {
@@ -195,20 +202,12 @@ nav a {
 }
 
 .button-text {
-  font-size: 1 em;
+  font-size: 1em;
   font-weight: bold;
   color: rgb(101, 163, 76);
 }
 
-.container {
-  position: relative;
-  height: 300px; /* Adjust height as needed */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-
+/* Animation */
 .ball {
   animation: drop 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
 }
@@ -224,3 +223,35 @@ nav a {
     transform: translateY(0);
   }
 }
+
+/* Responsive */
+.menu-button {
+  display: none;
+}
+
+@media (max-width: 800px) {
+  .hideOnMobile {
+    display: none;
+  }
+  .menu-button {
+    display: block;
+  }
+}
+
+@media (max-width: 400px) {
+  .sidebar {
+    width: 100%;
+  }
+}
+
+.sidebar-hamburger {
+  position: absolute;
+  top: 0.25vh;     /* Match navbar's vertical alignment */
+  right: 1.2vw;    /* Match navbar's right padding */
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 5vh;     /* Same as navbar */
+}
+

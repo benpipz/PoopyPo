@@ -1,14 +1,15 @@
 import React, { FC } from "react";
-import { useMap } from "@vis.gl/react-google-maps";
 import { useState, useRef, useEffect } from "react";
 import MarkerWithInfoWindow from "./MarkerWithInfoWindow";
 import { Point } from "../../Types/Infra";
+import MarkerClusterGroup from 'react-leaflet-cluster';
+
+
 
 interface PointsType {
   points: Point[];
-  askForRoute: any;
 }
-const Points: FC<PointsType> = ({ points, askForRoute }) => {
+const Points: FC<PointsType> = ({ points }) => {
   // const map = useMap();
   // const [markers, setMarkers] = useState({});
   // const clusterer = useRef(null);
@@ -16,8 +17,8 @@ const Points: FC<PointsType> = ({ points, askForRoute }) => {
     useState<string>("");
 
   useEffect(() => {
-    console.log(isMarkerWindowShowing);
-  }, [isMarkerWindowShowing]);
+    console.log("points in points", points);
+  }, [points]);
   // useEffect(() => {
   //   if (!map) return;
   //   if (!clusterer.current) {
@@ -46,20 +47,17 @@ const Points: FC<PointsType> = ({ points, askForRoute }) => {
   // };
 
   return (
-    <div>
-      {points &&
-        points.map((point) => {
-          return (
-            <MarkerWithInfoWindow
-              key={point.id}
-              point={point}
-              askForRoute={askForRoute}
-              setisMarkerWindowShowing={setisMarkerWindowShowing}
-              isMarkerWindowShowing={isMarkerWindowShowing === point.id}
-            />
-          );
-        })}
-    </div>
+  <MarkerClusterGroup>
+  {points &&
+    points.map((point) => (
+      <MarkerWithInfoWindow
+        key={point.id}
+        point={point}
+        setisMarkerWindowShowing={setisMarkerWindowShowing}
+        isMarkerWindowShowing={isMarkerWindowShowing === point.id}
+      />
+    ))}
+</MarkerClusterGroup>
   );
 };
 

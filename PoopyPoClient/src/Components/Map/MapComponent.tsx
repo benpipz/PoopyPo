@@ -67,14 +67,19 @@ const MapComponent: FC<any> = () => {
   };
 
   useEffect(() => {
-    const getPointsFromServer = async () => {
+  const fetchPoints = async () => {
+    try {
       const result = await ApiUtils.Get("points");
-      if (result.status == 200) {
-        dispatch(setInitialPoints(result.data));
-      }
-    };
-    getPointsFromServer();
-  }, [flag]);
+      console.log("Fetched points:", result.data); // <-- should be an array
+      dispatch(setInitialPoints(result.data));
+    } catch (error) {
+      console.error("Error fetching points:", error);
+    }
+  };
+
+  fetchPoints();
+}, []);
+
 
   useEffect(() => {
     geolocationPremission();

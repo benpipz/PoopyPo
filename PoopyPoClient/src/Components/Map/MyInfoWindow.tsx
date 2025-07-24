@@ -13,7 +13,6 @@ import { ApiUtils } from "../../Utils/ApiUtil";
 
 interface MyInfoWindowType {
   point: Point;
-  getRoute: () => void;
 }
 
 enum Action {
@@ -21,7 +20,7 @@ enum Action {
   Upvote,
   Downvote,
 }
-const MyInfoWindow: FC<MyInfoWindowType> = ({ point, getRoute }) => {
+const MyInfoWindow: FC<MyInfoWindowType> = ({ point }) => {
   const [user, loading] = useAuthState(auth);
   const dispatch = useDispatch();
   const [action, setAction] = useState<Action>(0);
@@ -107,16 +106,6 @@ const MyInfoWindow: FC<MyInfoWindowType> = ({ point, getRoute }) => {
             <div className="smallContainer">
               Nope
               <Icons iconType={"Dislike"} />
-            </div>
-          </button>
-          <button
-            style={{ margin: "1px" }}
-            className="btn btn-primary"
-            onClick={() => getRoute()}
-          >
-            <div className="smallContainer">
-              Go!
-              <Icons iconType={"Go"} />
             </div>
           </button>
           <p>upvotes: {point.votes}</p>

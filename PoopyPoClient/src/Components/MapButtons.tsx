@@ -9,11 +9,12 @@ import Center from "../assets/centerr.png";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../util/firebase";
 import { useState } from "react";
-import { useMap } from "@vis.gl/react-google-maps";
 import { useDispatch, useSelector } from "react-redux";
 import { addPointToStore, resetLocation } from "../store/mapSlice";
 import { ApiUtils } from "../Utils/ApiUtil";
 import { Location } from "../Types/Infra";
+import { useMap } from 'react-leaflet';
+import L from 'leaflet';
 
 const MapButtons = ({ SetformOpen }) => {
   const map = useMap();
@@ -28,11 +29,12 @@ const MapButtons = ({ SetformOpen }) => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (lastPoint && map) {
-      map.setCenter(lastPoint);
-    }
-  }, [lastPoint, map]);
+  // useEffect(() => {
+  //   if (lastPoint && map) {
+  //     map.setCenter(lastPoint);
+  //   }
+  // }, [lastPoint, map]);
+
 
   useEffect(() => {
     setTimeout(() => {
@@ -51,15 +53,31 @@ const MapButtons = ({ SetformOpen }) => {
     });
   };
 
+  
   const onResetLocation = () => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      let point = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      };
-      dispatch(resetLocation(point));
-    });
+  if (!navigator.geolocation) {
+    alert('Geolocation is not supported!');
+    return;
+  }
+
+  const onLocationFound = (e) => {
+    console.log('Location found:', e.latlng);
+    map.panTo(e.latlng);
+    map.off('locationfound', onLocationFound);
   };
+
+  const onLocationError = (e) => {
+    console.error('Leaflet location error:', e.message);
+    alert(`Error: ${e.message}`);
+    map.off('locationerror', onLocationError);
+  };
+
+  map.on('locationfound', onLocationFound);
+  map.on('locationerror', onLocationError);
+
+  map.locate({ watch: false, setView: false, enableHighAccuracy: true });
+};
+
 
   const makeRandomPoint = async () => {
     const point = randomLocation(location.lat, location.lng, "");
